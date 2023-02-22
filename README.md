@@ -14,9 +14,11 @@ This Databricks notebook is designed to be run daily as part of a workflow, load
 
 Three widgets are provided to allow users to specify parameters for the notebook:
 
-file_location: A text widget specifying the location of the files to be loaded. Default value is s3://de-tech-assessment-2022/data.
-file_type: A dropdown widget specifying the type of files to be loaded. Options are "csv", "parquet", and "json". Default value is "json".
-process_date: A text widget specifying the date to be processed. Default value is "2019-06-01".
+*file_location*: A text widget specifying the location of the files to be loaded. Default value is s3://de-tech-assessment-2022/data.
+
+*file_type*: A dropdown widget specifying the type of files to be loaded. Options are "csv", "parquet", and "json". Default value is "json".
+
+*process_date*: A text widget specifying the date to be processed. Default value is "2019-06-01".
 
 ### Loading Raw Data ###
 
