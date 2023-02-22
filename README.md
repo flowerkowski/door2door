@@ -4,27 +4,31 @@ Architecture diagram
 
 ![image](https://user-images.githubusercontent.com/4832862/220592766-6257dc82-1556-46f7-b935-e21d07de6975.png)
 
-## door2door Databricks Notebook Documentation ##
+## Databricks Notebook Documentation ##
 
-This notebook contains a workflow to load data from an S3 bucket, process it, and save the processed data in Delta Lake tables. It includes widgets to specify the process date, the S3 bucket location, and the type of files to be loaded. The notebook processes JSON files by default, but the file type can be changed using the dropdown widget.
+### Overview ###
 
-###Widgets###
-file_location: A text widget used to specify the location of the S3 bucket where the data files are stored. The default value is s3://de-tech-assessment-2022/data.
-file_type: A dropdown widget used to specify the type of files to be loaded. The options are CSV, Parquet, and JSON, with JSON being the default value.
-process_date: A text widget used to specify the date of the data to be processed. The default value is 2019-06-01.
-Workflow
-Calculate yesterday: Calculates the day before the current date, which will be used in subsequent steps to load the data for the previous day. The calculated date is printed to the console for verification.
-Load the RAW data: Loads the raw data from the S3 bucket into a Spark DataFrame using the specified file type and location.
-Exploratory Data Analysis: Counts the number of records in the raw DataFrame.
-Preview the RAW data: Shows a preview of the raw DataFrame.
-Save the RAW data to a Delta Lake: Saves the raw DataFrame as a Delta Lake table named door2door_table_bronze.
-Add Date only column: Adds a new column to the raw DataFrame containing only the date, which will be used to find new records to be processed.
-Create the Silver dataset: Selects the relevant columns from the raw DataFrame, flattens the nested JSON, and filters for records with the specified process date. The resulting DataFrame is saved as a Delta Lake table named door2door_table_silver.
-Preview the Silver Data: Shows a preview of the silver DataFrame using Spark SQL.
-Check how we can de-normalize the one big table into a more logical data model: Performs a query to show how the silver DataFrame can be denormalized into separate tables for operating period and vehicle data.
-Create separate table for Operating period data: Creates a Delta Lake table named operating_period containing the operating period data.
-Create separate Delta table for vehicle data: Creates a Delta Lake table named vehicle containing the vehicle data.
-Create Dataframes for the new day data: Creates new DataFrames containing the operating period and vehicle data for the current day.
-Merge new data into Delta table for vehicle data: Uses a temporary view and a join condition to merge the new vehicle data with the existing Delta table for vehicle data. The merged data is then appended to the Delta table.
-Merge new data into Delta table for operating period data: Uses a temporary view and a join condition to merge the new operating period data with the existing Delta table for operating period data. The merged data is then appended to the Delta table.
-Experimenting with adding window function to calculate the row number for each vehicle id: Adds a row number to each row in the vehicle DataFrame using a window function. The resulting DataFrame is printed to the console for verification.
+This Databricks notebook is designed to be run daily as part of a workflow, loading new files as specified by user-defined widgets. The notebook first calculates the previous day's date and retrieves user-defined widget values for the file location and type, as well as the process date (defaulting to June 1, 2019). It then loads the raw data into a DataFrame and saves it to a Delta Lake as the "bronze" table. The notebook then adds a new column to the DataFrame for date-only processing and flattens the nested JSON data. The flattened data is then filtered to only include records from the specified process date and saved as the "silver" table in Delta Lake. The notebook then demonstrates how to query and transform the "silver" table into separate "operating_period" and "vehicle" tables, merging new data for the current day with the previously stored Delta tables. Finally, the notebook includes an example of adding a window function to the "vehicle" table to calculate row numbers for each vehicle ID.
+
+### Widgets ###
+
+Three widgets are provided to allow users to specify parameters for the notebook:
+
+file_location: A text widget specifying the location of the files to be loaded. Default value is s3://de-tech-assessment-2022/data.
+file_type: A dropdown widget specifying the type of files to be loaded. Options are "csv", "parquet", and "json". Default value is "json".
+process_date: A text widget specifying the date to be processed. Default value is "2019-06-01".
+
+### Loading Raw Data ###
+
+The notebook first calculates yesterday's date and retrieves the user-defined widget values for file location, file type, and process date. It then loads the raw data into a DataFrame named df_bronze, counts the number of records to be loaded, previews the data, and saves it to a Delta Lake as the "bronze" table.
+
+### Preparing Data for Processing ###
+
+The notebook adds a new column to the DataFrame called date_only to facilitate date-only processing. It then flattens the nested JSON data and selects only the records from the specified process date to create a new DataFrame named df_silver. The df_silver DataFrame is then saved to a Delta Lake as the "silver" table.
+
+### Querying and Transforming Data ###
+
+The notebook demonstrates how to query and transform the "silver" table to create separate "operating_period" and "vehicle" tables. It creates new DataFrames for the current day's data, adds temporary views for each, and merges the new data with the Delta tables using join conditions. Finally, the notebook adds a window function to the "vehicle" table to calculate row numbers for each vehicle ID.
+
+### Conclusion ###
+This Databricks notebook provides a template for loading, processing, and transforming daily data using user-defined widgets and Delta Lake tables. By following the notebook's structure and modifying the widgets and queries as needed, users can create customized daily workflows for their own data needs.
