@@ -32,5 +32,11 @@ The notebook adds a new column to the DataFrame called date_only to facilitate d
 
 The notebook demonstrates how to query and transform the "silver" table to create separate "operating_period" and "vehicle" tables. It creates new DataFrames for the current day's data, adds temporary views for each, and merges the new data with the Delta tables using join conditions. Finally, the notebook adds a window function to the "vehicle" table to calculate row numbers for each vehicle ID.
 
+### The Data Model ###
+
+These are the tables that are created in the delta lake for the data model and reporting purposes:
+
+![image](https://user-images.githubusercontent.com/4832862/220616911-4a4ee961-4295-4198-949e-56f5fa0bf091.png)
+
 ### Conclusion ###
 This Databricks notebook provides a template for loading, processing, and transforming daily data using user-defined widgets and Delta Lake tables. By following the notebook's structure and modifying the widgets and queries as needed, users can create customized daily workflows for their own data needs.
